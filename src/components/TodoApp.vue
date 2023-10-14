@@ -82,16 +82,12 @@ export default {
       availableStatuses: ['Do zrobienia', 'W trakcie', 'Zrobione'],
       tasks: [
         {
-          name: 'Do the laundry',
+          name: 'Zrobić pranie',
           status: 'Do zrobienia'
         },
         {
-          name: 'Make dinner',
+          name: 'Ugotować obiad',
           status: 'Do zrobienia'
-        },
-        {
-          name: 'Cook meth',
-          status: 'W trakcie'
         }
         
 
