@@ -58,9 +58,9 @@
       </tbody>
     </table>
     <div class=" ">
-      <button class="btn btn-primary rounded-0" style="width:312px" @click="changeBgColorTodos(isClickedTodos)" :class="[isClicked /*? 'greenDiv' : 'blueDiv'*/]">Wybierz wszystkie do zrobienia</button>
-    <button class="btn btn-secondary rounded-0" style="width:312px" @click="changeBgColorInProgress(isClickedInProgress)" :class="[isClicked]">Wybierz wszystkie w trakcie</button>
-    <button class="btn btn-primary rounded-0" style="width:312px" @click="changeBgColorFinished(isClickedFinished)" :class="[isClicked]">Wybierz wszystkie skończone</button>
+      <button class="btn btn-primary rounded-0"  @click="changeBgColorTodos(isClickedTodos)" :class="[isClicked /*? 'greenDiv' : 'blueDiv'*/]">Wybierz wszystkie do zrobienia</button>
+    <button class="btn btn-secondary rounded-0"  @click="changeBgColorInProgress(isClickedInProgress)" :class="[isClicked]">Wybierz wszystkie w trakcie</button>
+    <button class="btn btn-primary rounded-0" @click="changeBgColorFinished(isClickedFinished)" :class="[isClicked]">Wybierz wszystkie skończone</button>
     </div>
    
   </div>
