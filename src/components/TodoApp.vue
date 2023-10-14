@@ -2,7 +2,7 @@
   <div class="container mt-5">
     <h2 class="text-center">To do list</h2>
     <div class="d-flex">
-      <input v-model="task" type="text" class="form-control" placeholder="Wprowadź zadanie">
+      <input v-model="task" type="text" class="form-control" placeholder="Wprowadź zadanie" :maxlength="maxLength">
       <button class="btn btn-warning rounded-0"
        @click="submitTask"
        :disabled="!task.length">
@@ -46,11 +46,11 @@
           </td>
           <td>
             <div class="text-center" @click="editTask(index)">
-              <span class="fa fa-pen"></span>
+              <span class="fa fa-pen" style="cursor: pointer;"></span>
             </div>
           </td>
           <td>
-            <div class="text-center" @click="deleteTask(index)">
+            <div class="text-center" style="cursor: pointer" @click="deleteTask(index)">
               <span class="fa fa-trash"></span>
             </div>
           </td>
@@ -75,31 +75,7 @@
 const STORAGE_KEY = 'vue-todo-app-storage';
 
 localStorage.setItem('taskName', 'HALO');
-localStorage.getItem('taskName')
 
-/*import { onMounted, ref, watch } from 'vue'
-
-let task = name
-let name = ref(task)
-
-onMounted(() => {
-	name.value = localStorage.getItem('name') || ''
-	todos.value = JSON.parse(localStorage.getItem('todos')) || []
-})
-
-watch(name, (newVal) => {
-	localStorage.setItem('name', newVal)
-})
-
-watch(name, (newVal) => {
-	localStorage.setItem('name', JSON.stringify(newVal))
-}, {
-	deep: true
-})*/
-
-
-
-//if(this.task.length >= 1){}
 
 
 export default {
@@ -109,6 +85,7 @@ export default {
   },
   data() {
     return {
+      maxLength: 50,
       isClickedTodos: true,
       isClickedInProgress: true,
       isClickedFinished: true,
@@ -130,6 +107,8 @@ export default {
   methods: {
     submitTask() {
       if (this.task.length === 0) return;
+
+      if (this.task.length === 50){alert('Maksymalna liczba znaków to 50')} ;//nwm jak inaczej
 
       if (this.editedTask === null) {
         this.tasks.push({
@@ -183,7 +162,7 @@ export default {
 }
 //disabled!!
 
-
+localStorage.getItem('taskName')
 </script>
 <style scoped>
 .finished {
