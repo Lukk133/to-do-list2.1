@@ -19,10 +19,10 @@
       <tbody>
         <tr v-for="(task, index) in tasks" :key="index">
           <td>
-            <div :class="{'todoMark': isClickedTodos === false && task.status === 'To do'}">
-              <div :class="{'inProgressMark': isClickedInProgress === false && task.status === 'In progress'}">
-                <div :class="{'finishedMark': isClickedFinished === false && task.status === 'Finished'}">
-                  <span :class="{ 'finished': task.status === 'Finished' }">
+            <div :class="{'todoMark': isClickedTodos === false && task.status === 'Do zrobienia'}">
+              <div :class="{'inProgressMark': isClickedInProgress === false && task.status === 'W trakcie'}">
+                <div :class="{'finishedMark': isClickedFinished === false && task.status === 'Zrobione'}">
+                  <span :class="{ 'finished': task.status === 'Zrobione' }">
               {{ task.name }}
             </span>
                 </div>
@@ -34,10 +34,11 @@
             
           </td>
           <td style="width: 120px"><span @click="changeStatus(index)" :class="{
-            'text-danger': task.status === 'To do',
-            'text-warning': task.status === 'In progress',
-            'text-success': task.status === 'Finished'
-          }">{{ task.status }}
+            'text-danger': task.status === 'Do zrobienia',
+            'text-warning': task.status === 'W trakcie',
+            'text-success': task.status === 'Zrobione'
+            }">
+            {{ task.status }}
             </span>
           </td>
           <td>
@@ -78,19 +79,19 @@ export default {
       isClickedFinished: true,
       task: '',
       editedTask: null,
-      availableStatuses: ['To do', 'In progress', 'Finished'],
+      availableStatuses: ['Do zrobienia', 'W trakcie', 'Zrobione'],
       tasks: [
         {
           name: 'Do the laundry',
-          status: 'To do'
+          status: 'Do zrobienia'
         },
         {
           name: 'Make dinner',
-          status: 'To do'
+          status: 'Do zrobienia'
         },
         {
           name: 'Cook meth',
-          status: 'In progress'
+          status: 'W trakcie'
         }
         
 
@@ -104,7 +105,7 @@ export default {
       if (this.editedTask === null) {
         this.tasks.push({
           name: this.task,
-          status: 'To do'
+          status: 'Do zrobienia'
         })
       } else {
         this.tasks[this.editedTask].name = this.task
