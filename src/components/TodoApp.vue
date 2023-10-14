@@ -2,7 +2,7 @@
   <div class="container mt-5">
     <h2 class="text-center">To do list</h2>
     <div class="d-flex">
-      <input v-model="task" type="text" class="form-control" placeholder="input a task">
+      <input v-model="task" type="text" class="form-control" placeholder="Wprowadź zadanie">
       <button class="btn btn-warning rounded-0" @click="submitTask">DODAJ</button>
 
     </div>
@@ -10,18 +10,28 @@
     <table class="table table-bordered mt-2">
       <thead>
         <tr>
-          <th scope="col">Task</th>
-          <th scope="col">Status</th>
-          <th scope="col">#</th>
-          <th scope="col">#</th>
+          <th scope="col" class="text-center">Task</th>
+          <th scope="col" class="text-center">Status</th>
+          <th scope="col" class="text-center">Edytuj</th>
+          <th scope="col" class="text-center">Usuń</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(task, index) in tasks" :key="index">
           <td>
-            <span :class="{ 'finished': task.status === 'Finished' }">
+            <div :class="{'todoMark': isClickedTodos === false && task.status === 'To do'}">
+              <div :class="{'inProgressMark': isClickedInProgress === false && task.status === 'In progress'}">
+                <div :class="{'finishedMark': isClickedFinished === false && task.status === 'Finished'}">
+                  <span :class="{ 'finished': task.status === 'Finished' }">
               {{ task.name }}
             </span>
+                </div>
+                
+              </div>
+              
+           
+            </div>
+            
           </td>
           <td style="width: 120px"><span @click="changeStatus(index)" :class="{
             'text-danger': task.status === 'To do',
@@ -46,9 +56,12 @@
 
       </tbody>
     </table>
-    <button class="btn btn-primary rounded-0" @click="">Wybierz wszystkie do zrobienia</button>
-    <button class="btn btn-secondary rounded-0" @click="">Wybierz wszystkie do zrobienia</button>
-    <button class="btn btn-primary rounded-0" @click="">Wybierz wszystkie do zrobienia</button>
+    <div class=" ">
+      <button class="btn btn-primary rounded-0" style="width:312px" @click="changeBgColorTodos(isClickedTodos)" :class="[isClicked /*? 'greenDiv' : 'blueDiv'*/]">Wybierz wszystkie do zrobienia</button>
+    <button class="btn btn-secondary rounded-0" style="width:312px" @click="changeBgColorInProgress(isClickedInProgress)" :class="[isClicked]">Wybierz wszystkie w trakcie</button>
+    <button class="btn btn-primary rounded-0" style="width:312px" @click="changeBgColorFinished(isClickedFinished)" :class="[isClicked]">Wybierz wszystkie skończone</button>
+    </div>
+   
   </div>
 </template>
 
@@ -60,18 +73,27 @@ export default {
   },
   data() {
     return {
+      isClickedTodos: true,
+      isClickedInProgress: true,
+      isClickedFinished: true,
       task: '',
       editedTask: null,
       availableStatuses: ['To do', 'In progress', 'Finished'],
       tasks: [
         {
-          name: 'Do laundry',
+          name: 'Do the laundry',
+          status: 'To do'
+        },
+        {
+          name: 'Make dinner',
           status: 'To do'
         },
         {
           name: 'Cook meth',
           status: 'In progress'
         }
+        
+
       ]
     }
   },
@@ -104,6 +126,15 @@ export default {
       if (++newIndex > 2) newIndex = 0;
       this.tasks[index].status = this.availableStatuses[newIndex]
     },
+    changeBgColorTodos(value) {
+      this.isClickedTodos = !value
+    },
+    changeBgColorInProgress(value){
+      this.isClickedInProgress = !value
+    },
+    changeBgColorFinished(value){
+      this.isClickedFinished = !value
+    }
   }
 }
 
@@ -113,5 +144,14 @@ export default {
 <style scoped>
 .finished {
   text-decoration: line-through;
+}
+.todoMark{
+  background-color: rgb(255, 116, 116);
+}
+.inProgressMark{
+  background-color: rgb(253, 243, 93)
+}
+.finishedMark{
+  background-color: rgb(54, 255, 47);
 }
 </style>
