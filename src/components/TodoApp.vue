@@ -3,15 +3,13 @@
     <h2 class="text-center">To do list</h2>
     <div class="d-flex">
       <input v-model="task" type="text" class="form-control" placeholder="Wprowadź zadanie" :maxlength="maxLength">
-      <button id="bn" class="dodaj btn btn-warning rounded-0 "
-       @click="submitTask"
-       :disabled="!task.length">
-       DODAJ</button>
-       <button id="bn" class="dodaj btn btn-warning rounded-0 "
-       @click="cofnijEdytowanie(isClickedCofnijEdytowanie)"
-       :disabled="!isClickedEdit">
-       COFNIJ EDYTOWANIE</button>
-
+      <button class="btn btn-primary rounded-0 " @click="submitTask" :disabled="!task.length" :hidden="schowajEdytuj">
+        EDYTUJ</button>
+      <button :hidden="schowajDodaj" class="btn btn-primary rounded-0 " @click="submitTask" :disabled="!task.length">
+        DODAJ</button>
+      <button class="btn btn-primary rounded-0 " @click="cofnijEdytowanie(isClickedCofnijEdytowanie)"
+        :disabled="!isClickedEdit">
+        COFNIJ EDYTOWANIE</button>
     </div>
 
     <table class="table table-bordered mt-2">
@@ -24,23 +22,21 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(task, index) in tasks" :key="index">
+        <tr v-for="(task, index) in tasks" :key="index" :hidden="task.status === 'W trakcie' && isClickedTodos === false || task.status === 'Zrobione' && isClickedTodos === false ||
+          task.status === 'Do zrobienia' && isClickedInProgress === false || task.status === 'Zrobione' && isClickedInProgress === false ||
+          task.status === 'Do zrobienia' && isClickedFinished === false || task.status === 'W trakcie' && isClickedFinished === false
+          ">
           <td>
-            <div :class="{ 'todoMark': isClickedTodos === false && task.status === 'Do zrobienia' }">
-              <div :class="{ 'inProgressMark': isClickedInProgress === false && task.status === 'W trakcie' }">
-                <div :class="{ 'finishedMark': isClickedFinished === false && task.status === 'Zrobione' }">
-                  <span :class="{ 'finished': task.status === 'Zrobione' }">
-                    {{ task.name }} 
-                  </span>
-                </div>
 
-              </div>
+            <span :class="{ 'finished': task.status === 'Zrobione' }">
+              {{ task.name }}
+            </span>
 
 
-            </div>
+            <!--:class="{ 'todoMark': isClickedTodos === false && task.status === 'Do zrobienia' }-->
 
           </td>
-          <td class="text-center" style="width: 120px; cursor: pointer;"><span @click="changeStatus(index)" :class="{
+          <td class="text-center" style="width: 120px"><span style="cursor: pointer" @click="changeStatus(index)" :class="{
             'text-danger': task.status === 'Do zrobienia',
             'text-warning': task.status === 'W trakcie',
             'text-success': task.status === 'Zrobione'
@@ -51,44 +47,53 @@
           <td>
             <div @click="enableEditReturn(isClickedEdit)">
               <div class="text-center" @click="editTask(index)">
-              <span  @click="myFunctionClick()" class="fa fa-pen" style="cursor: pointer ;"></span>
+                <span class="fa fa-pen" style="cursor: pointer ;"></span>
+              </div>
             </div>
-            </div>
-            
+
           </td>
           <td>
-            <div class="text-center" style="cursor: pointer" @click="deleteTask(index)">
-              <span class="fa fa-trash"></span>
+            <div class="text-center" @click="deleteTask(index)">
+              <span style="cursor: pointer" class="fa fa-trash"></span>
             </div>
           </td>
         </tr>
 
 
+
+
       </tbody>
     </table>
     <div>
-      <button style="width: 430px" class="btn btn-primary rounded-0" @click="changeBgColorTodos(isClickedTodos)"
-      :class="{'clickedButton': isClickedTodos === false}"
-        >Wybierz wszystkie do zrobienia</button>
-      <button style="width: 430px" class="btn btn-secondary rounded-0" @click="changeBgColorInProgress(isClickedInProgress)"
-      :class="{'clickedButton2': isClickedInProgress === false}"
-        >Wybierz wszystkie w trakcie</button>
-      <button style="width: 430px" class="btn btn-primary rounded-0" @click="changeBgColorFinished(isClickedFinished)"
-      :class="{'clickedButton': isClickedFinished === false}"
-        >Wybierz wszystkie skończone</button>
+      <button style="width: 432px" class="btn btn-primary rounded-0" @click="selectTodos(isClickedTodos)"
+        :class="{ 'clickedButton': isClickedTodos === false }">Wybierz wszystkie do zrobienia</button>
+      <button style="width: 432px" class="btn btn-secondary rounded-0" @click="selectInProgress(isClickedInProgress)"
+        :class="{ 'clickedButton2': isClickedInProgress === false }">Wybierz wszystkie w trakcie</button>
+      <button style="width: 432px" class="btn btn-primary rounded-0" @click="selectFinished(isClickedFinished)"
+        :class="{ 'clickedButton': isClickedFinished === false }">Wybierz wszystkie zrobione</button>
     </div>
 
   </div>
+
+  <!-- użyć :hidden na cały row czyli tr
+    script setup nie działa <div :value="value" hidden>wadwaijd;l
+     <input v-model="text" type="input" />
+  <div>{{ this.text }}</div>
+  </div>-->
 </template>
 
 <script>
+
+import { ref, watch } from 'vue'
+
+const text = ref("Unknown");
 
 const STORAGE_KEY = 'vue-todo-app-storage';
 
 localStorage.setItem('taskName', 'HALO');
 
-
-
+//if(task.length === 50){alert('halo')}
+//if (this.task.length === 50){alert('Maksymalna liczba znaków to 50')} 
 
 
 export default {
@@ -98,6 +103,9 @@ export default {
   },
   data() {
     return {
+      schowajEdytuj: true,
+      schowajDodaj: false,
+      ukryjDoZrobienia: true,
       maxLength: 50,
       isClickedTodos: true,
       isClickedInProgress: true,
@@ -106,7 +114,6 @@ export default {
       isClickedCofnijEdytowanie: false,
       task: '',
       editedTask: null,
-      el: '#app',
       availableStatuses: ['Do zrobienia', 'W trakcie', 'Zrobione'],
       tasks: [
         {
@@ -124,7 +131,7 @@ export default {
     submitTask() {
       if (this.task.length === 0) return;
 
-      if (this.task.length === 50){alert('Maksymalna liczba znaków to 50')} ;//nwm jak inaczej
+      if (this.task.length === 50) { alert('Maksymalna liczba znaków to 50') };//nwm jak inaczej
 
       if (this.editedTask === null) {
         this.tasks.push({
@@ -133,40 +140,46 @@ export default {
         })
       } else {
         this.tasks[this.editedTask].name = this.task
-        this.editedTask = null;
+        this.editedTask = null
+        this.schowajDodaj = false
+        this.schowajEdytuj = true;
       }
       this.task = ''
       this.isClickedEdit = false
-      
+
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.tasks))
     },
-    created(){
-      this.todos=JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+    created() {
+      this.todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
     },
     deleteTask(index) {
       this.tasks.splice(index, 1)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.tasks))
     },
     editTask(index) {
-        this.task = this.tasks[index].name
+      this.task = this.tasks[index].name
       this.editedTask = index
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.tasks))
-      
+      this.schowajDodaj = true
+      this.schowajEdytuj = false
+
+      // this.dodaj = edytuj
+      // if true dodaj = edytuj
     },
     changeStatus(index) {
       let newIndex = this.availableStatuses.indexOf(this.tasks[index].status)
-      
+
 
       if (++newIndex > 2) newIndex = 0;
       this.tasks[index].status = this.availableStatuses[newIndex]
     },
-    changeBgColorTodos(value) {
+    selectTodos(value) {
       this.isClickedTodos = !value
     },
-    changeBgColorInProgress(value) {
+    selectInProgress(value) {
       this.isClickedInProgress = !value
     },
-    changeBgColorFinished(value) {
+    selectFinished(value) {
       this.isClickedFinished = !value
     },
     enableEditReturn(value) {
@@ -174,47 +187,37 @@ export default {
     },
     cofnijEdytowanie(value) {
       this.isClickedCofnijEdytowanie = !value
-      if(this.isClickedCofnijEdytowanie = true)
-      {this.task = ''
-      this.isClickedEdit = false
-    }
+      if (this.isClickedCofnijEdytowanie = true) {
+        this.task = ''
+        this.isClickedEdit = false
+      }
     }
   }
 }
 //disabled!!
 
 localStorage.getItem('taskName')
+
 </script>
 <style scoped>
 .finished {
   text-decoration: line-through;
 }
 
-.todoMark {
-  background-color: rgb(255, 116, 116);
-}
-
-.inProgressMark {
-  background-color: rgb(253, 243, 93)
-}
-
-.finishedMark {
-  background-color: rgb(54, 255, 47);
-}
-.flex{
+/*.flex{
   display: grid;
   
 }
 .flex1 .flex2 .flex3{
   grid-template-columns: 1fr 1fr 1fr;
-}
-.clickedButton{
-  background-color: #0b4fb4
-}
-.clickedButton2{
-  background-color: #515558;
+}*/
+.clickedButton {
+  background-color: #0a4aa8
 }
 
+.clickedButton2 {
+  background-color: rgb(66, 69, 71);
+}
 </style>
 
 
