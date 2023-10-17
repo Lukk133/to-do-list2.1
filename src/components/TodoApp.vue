@@ -64,12 +64,12 @@
 
       </tbody>
     </table>
-    <div>
-      <button style="width: 432px" class="btn btn-primary rounded-0" @click="selectTodos(isClickedTodos)"
+    <div class="flexbox">
+      <button  class="btn btn-primary rounded-0 flex1" @click="selectTodos(isClickedTodos)"
         :class="{ 'clickedButton': isClickedTodos === false }">Wybierz wszystkie do zrobienia</button>
-      <button style="width: 432px" class="btn btn-secondary rounded-0" @click="selectInProgress(isClickedInProgress)"
+      <button  class="btn btn-secondary rounded-0 flex1" @click="selectInProgress(isClickedInProgress)"
         :class="{ 'clickedButton2': isClickedInProgress === false }">Wybierz wszystkie w trakcie</button>
-      <button style="width: 432px" class="btn btn-primary rounded-0" @click="selectFinished(isClickedFinished)"
+      <button class="btn btn-primary rounded-0 flex1" @click="selectFinished(isClickedFinished)"
         :class="{ 'clickedButton': isClickedFinished === false }">Wybierz wszystkie zrobione</button>
     </div>
 
@@ -168,10 +168,9 @@ export default {
     },
     changeStatus(index) {
       let newIndex = this.availableStatuses.indexOf(this.tasks[index].status)
-
-
       if (++newIndex > 2) newIndex = 0;
       this.tasks[index].status = this.availableStatuses[newIndex]
+      localStorage.setItem(STORAGE_KEY, (this.tasks.status))
     },
     selectTodos(value) {
       this.isClickedTodos = !value
@@ -203,7 +202,13 @@ localStorage.getItem('taskName')
 .finished {
   text-decoration: line-through;
 }
-
+.flexbox{
+        display: flex;
+        flex-direction: row;
+    }
+.flex1{
+    flex: 1;
+}
 /*.flex{
   display: grid;
   
