@@ -84,18 +84,6 @@
 
 <script>
 
-import { ref, watch } from 'vue'
-
-const text = ref("Unknown");
-
-const STORAGE_KEY = 'vue-todo-app-storage';
-
-localStorage.setItem('taskName', 'HALO');
-
-//if(task.length === 50){alert('halo')}
-//if (this.task.length === 50){alert('Maksymalna liczba znaków to 50')} 
-
-
 export default {
   name: 'HelloWorld',
   props: {
